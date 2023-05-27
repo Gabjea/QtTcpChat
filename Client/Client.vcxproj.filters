@@ -23,16 +23,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="QtMultiplayerBlackjack.qrc">
+    <QtRcc Include="Client.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-    <QtUic Include="QtMultiplayerBlackjack.ui">
+    <QtUic Include="Client.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtMoc Include="QtMultiplayerBlackjack.h">
+    <QtMoc Include="Client.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <ClCompile Include="QtMultiplayerBlackjack.cpp">
+    <ClCompile Include="Client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ResourceCompile Include="$pro_name$.rc">
