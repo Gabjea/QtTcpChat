@@ -5,14 +5,14 @@ Server::Server(QWidget *parent)
 {
     ui.setupUi(this);
     
-    //connect(ui.pushButton, &QPushButton::clicked, this, &Server::onClicked);
+    connect(ui.sendServerMessage, &QPushButton::clicked, this, &Server::onSendServerMessage);
     
 
 }
 
-void Server::onClicked()
+void Server::onSendServerMessage()
 {
-
+    sendToAllClients(ui.serverMessageInput->text());
 }
 
 
@@ -49,4 +49,34 @@ void Server::addNewClientConnection(QTcpSocket* socket)
 {
     clientConnectionList.append(socket);
     connect(socket, SIGNAL(readyRead()), this, SLOT(readDataFromSocket()));
+    QString clientConnectedString = "Clinet: " + QString::number(socket->socketDescriptor()) + " has connected to the server.";
+    
+    ui.userList->addItem(QString::number(socket->socketDescriptor()));
+    
+    sendToClient("Welcome to the server",socket);
+    sendToAllClientsExceptClient(clientConnectedString,socket);
+}
+
+void Server::sendToClient(QString message, QTcpSocket* socket)
+{
+    socket->write(message.toStdString().c_str());
+}
+
+void Server::sendToAllClients(QString message)
+{
+    ui.messageList->addItem("Server: "+ message);
+    for (QTcpSocket* socket : clientConnectionList)
+    {
+        socket->write(message.toStdString().c_str());
+    }
+}
+
+void Server::sendToAllClientsExceptClient(QString message, QTcpSocket* exceptSocket)
+{
+    ui.messageList->addItem("Server: " + message);
+    for (QTcpSocket* socket : clientConnectionList)
+    {
+        if(socket->socketDescriptor() != exceptSocket->socketDescriptor())
+            socket->write(message.toStdString().c_str());
+    }
 }
