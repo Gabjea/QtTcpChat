@@ -10,6 +10,7 @@
 #include <QString>
 #include <QMessageBox>
 
+
 class Server : public QMainWindow
 {
     Q_OBJECT
@@ -24,10 +25,11 @@ signals:
     
 public slots:
     void newConnection();
-    void onClicked();
+    void onSendServerMessage();
 
 protected:
     void showEvent(QShowEvent* event) override;
+    
 
 private:
     int port;
@@ -37,4 +39,7 @@ private:
 
 
     void addNewClientConnection(QTcpSocket* socket);
+    void sendToClient(QString message, QTcpSocket* socket);
+    void sendToAllClients(QString message);
+    void sendToAllClientsExceptClient(QString message, QTcpSocket* socket);
 };
