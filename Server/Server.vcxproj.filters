@@ -43,9 +43,15 @@
     <ClCompile Include="ServerInitWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="User.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ServerInitWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="User.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

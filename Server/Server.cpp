@@ -12,12 +12,32 @@ Server::Server(QWidget *parent)
 
 void Server::onSendServerMessage()
 {
-    sendToAllClients(ui.serverMessageInput->text());
+    sendToAllClients("Server: "+ui.serverMessageInput->text());
+    ui.serverMessageInput->clear();
+}
+
+void Server::readDataFromSocket()
+{
+    
+    QTcpSocket* m_socket = reinterpret_cast<QTcpSocket*>(sender());
+    QByteArray messageFromSocket = m_socket->readAll();
+    User* currentUser = getUser(m_socket);
+    QString message = getUser(m_socket)->getName() + ": " + QString::fromStdString(messageFromSocket.toStdString());
+
+    interpretMessage(message, currentUser);
+    //sendToAllClients(message);
 }
 
 
 Server::~Server()
-{}
+{
+    if (server != nullptr)
+        delete server;
+
+    for (User* user : clientConnectionList)
+        if(user != nullptr)
+            delete user;
+}
 
 void Server::showEvent(QShowEvent * event)
 {
@@ -45,16 +65,37 @@ void Server::newConnection()
     }
 }
 
+
+
+void Server::interpretMessage(QString message, User* user)
+{
+    QStringList splittedMessage = message.split(QRegularExpression("\\s+"));
+    QString command =splittedMessage[1];
+    QString data =splittedMessage[2];
+
+    if (command == "/message")
+    {
+        sendToAllClients(splittedMessage[0]+splittedMessage[2]);
+    }
+    else if (command == "/changename")
+    {
+        user->setName(data);
+        QString clientConnectedString = user->getName() + " has connected to the server.";
+
+        ui.userList->addItem(user->getName());
+
+        sendToClient("Welcome to the server", user->getSocket());
+        sendToAllClientsExceptClient(clientConnectedString, user->getSocket());
+    }
+    
+}
+
 void Server::addNewClientConnection(QTcpSocket* socket)
 {
-    clientConnectionList.append(socket);
+    User* user = new User{ QString("alex"), socket };
+    clientConnectionList.append(user);
     connect(socket, SIGNAL(readyRead()), this, SLOT(readDataFromSocket()));
-    QString clientConnectedString = "Clinet: " + QString::number(socket->socketDescriptor()) + " has connected to the server.";
-    
-    ui.userList->addItem(QString::number(socket->socketDescriptor()));
-    
-    sendToClient("Welcome to the server",socket);
-    sendToAllClientsExceptClient(clientConnectedString,socket);
+  
 }
 
 void Server::sendToClient(QString message, QTcpSocket* socket)
@@ -64,19 +105,30 @@ void Server::sendToClient(QString message, QTcpSocket* socket)
 
 void Server::sendToAllClients(QString message)
 {
-    ui.messageList->addItem("Server: "+ message);
-    for (QTcpSocket* socket : clientConnectionList)
+    ui.messageList->addItem(message);
+    for (User* user : clientConnectionList)
     {
-        socket->write(message.toStdString().c_str());
+        
+        user->getSocket()->write(message.toStdString().c_str());
     }
 }
 
 void Server::sendToAllClientsExceptClient(QString message, QTcpSocket* exceptSocket)
 {
     ui.messageList->addItem("Server: " + message);
-    for (QTcpSocket* socket : clientConnectionList)
+    for (User* user : clientConnectionList)
     {
-        if(socket->socketDescriptor() != exceptSocket->socketDescriptor())
-            socket->write(message.toStdString().c_str());
+        if(user->getSocket()->socketDescriptor() != exceptSocket->socketDescriptor())
+            user->getSocket()->write(message.toStdString().c_str());
     }
+}
+
+User* Server::getUser(QTcpSocket* socket)
+{
+    for (User* user : clientConnectionList)
+    {
+        if (user->getSocket() == socket)
+            return user;
+    }
+    return nullptr;
 }
