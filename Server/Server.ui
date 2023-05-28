@@ -1,28 +1,61 @@
-<UI version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>ServerClass</class>
- <widget class="QMainWindow" name="ServerClass" >
-  <property name="objectName" >
-   <string notr="true">ServerClass</string>
-  </property>
-  <property name="geometry" >
+ <widget class="QMainWindow" name="ServerClass">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>400</height>
+    <width>674</width>
+    <height>440</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Server</string>
-  </property>  <widget class="QMenuBar" name="menuBar" />
-  <widget class="QToolBar" name="mainToolBar" />
-  <widget class="QWidget" name="centralWidget" />
-  <widget class="QStatusBar" name="statusBar" />
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="3" column="2">
+     <widget class="QPushButton" name="sendServerMessage">
+      <property name="text">
+       <string>Send Message</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QListView" name="messageList"/>
+    </item>
+    <item row="3" column="0" colspan="2">
+     <widget class="QLineEdit" name="serverMessageInput"/>
+    </item>
+    <item row="0" column="1" colspan="2">
+     <widget class="QListView" name="userList"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>674</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
  </widget>
- <layoutDefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
+ <layoutdefault spacing="6" margin="11"/>
  <resources>
-   <include location="Server.qrc"/>
+  <include location="Server.qrc"/>
  </resources>
  <connections/>
-</UI>
+</ui>
